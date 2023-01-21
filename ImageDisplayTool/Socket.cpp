@@ -1,5 +1,5 @@
 #include "Socket.h"
-
+#define _CRT_SECURE_NO_WARNINGS
 
 CTcpServer::CTcpServer()
 {

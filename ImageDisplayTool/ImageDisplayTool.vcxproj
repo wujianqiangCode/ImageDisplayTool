@@ -129,11 +129,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ImageDisplayTool.h" />
+    <ClInclude Include="ImagePixelFormatToRGBA.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="Socket.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageDisplayTool.cpp" />
+    <ClCompile Include="ImagePixelFormatToRGBA.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="Socket.cpp" />
   </ItemGroup>

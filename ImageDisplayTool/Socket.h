@@ -15,8 +15,8 @@
 class CTcpServer
 {
 public:
-    int m_listenfd;   // 服务端用于监听的socket
-    int m_clientfd;   // 客户端连上来的socket
+    SOCKET m_listenfd;   // 服务端用于监听的socket
+    SOCKET m_clientfd;   // 客户端连上来的socket
 
     CTcpServer();
 

@@ -26,10 +26,9 @@ enum LogLevel {
 extern "C"
 {
 #endif
-	void _stdcall SetLogDisplayLevel(LogLevel level, unsigned char* pIPAdd);
-	bool _stdcall SendLog(unsigned char* string, enum LogLevel level, enum  LogDisplayWindows target);
-	//bool _stdcall SendLogEx(unsigned char* string, enum LogLevel level, enum  LogDisplayWindows target);
-	bool _stdcall SendImage(unsigned char* pSrc, int width, int height, enum ImagePixelFormat type);
+	void _stdcall SetLogDisplayLevel(LogLevel level, int tcpServerPort = 5051);
+	bool _stdcall SendLog(char* strbuffer, enum LogLevel level, enum  LogDisplayWindows target);
+	bool _stdcall SendImage(unsigned char* pSrc, unsigned int pixel_width, unsigned int pixel_height, enum ImagePixelFormat type);
 #ifdef _CPLUSPLUS
 }
 #endif
