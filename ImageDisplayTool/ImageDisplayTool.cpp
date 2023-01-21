@@ -4,10 +4,10 @@
 
 #include <stdio.h>
 
-static LogLevel m_displayLevel = LOG_DEBUG;
+
 static CTcpServer m_tcpServer;
+static int m_tcpServerPort = 5051;
 static bool m_flag = false;
-static int m_tcpServerPort = 5051;// 为通信端口
 bool CTcpServerInit() {
     
     if (m_tcpServer.InitServer(m_tcpServerPort) == false){
@@ -27,23 +27,44 @@ bool CTcpServerInit() {
     return m_flag;
 }
 
-void _stdcall SetLogDisplayLevel(LogLevel level, int tcpServerPort)
+bool _stdcall SetLogDisplayLevelAndTcpServerPort(LogLevel level, int tcpServerPort)
 {
-	m_displayLevel = level;
     m_tcpServerPort = tcpServerPort;
+    while (m_flag == false) {
+        m_flag = CTcpServerInit();
+    }
+
+    char strbufferSetLogDisplayLevel[64];
+    memset(strbufferSetLogDisplayLevel, 0, sizeof(strbufferSetLogDisplayLevel));
+    sprintf_s(strbufferSetLogDisplayLevel, "SetLogDisplayLevel:%d", level);
+    if (m_tcpServer.Send(strbufferSetLogDisplayLevel, (int)strlen(strbufferSetLogDisplayLevel)) <= 0) {
+        m_flag = false;
+        return m_flag;
+    }
+
+    char strbufferSetTcpServerPort[64];
+    memset(strbufferSetTcpServerPort, 0, sizeof(strbufferSetTcpServerPort));
+    sprintf_s(strbufferSetTcpServerPort, "SetTcpServerPort:%d", tcpServerPort);
+    if (m_tcpServer.Send(strbufferSetTcpServerPort, (int)strlen(strbufferSetTcpServerPort)) <= 0) {
+        m_flag = false;
+        return m_flag;
+    }
+
+    printf("SetLogDisplayLevel：%s ,SetTcpServerPortLogLevel：%s\n", strbufferSetLogDisplayLevel, strbufferSetTcpServerPort);
+    return m_flag;
 }
 
 
-bool _stdcall SendLog(char* strbuffer, enum LogLevel level, enum  LogDisplayWindows target)
+bool _stdcall SendLog(char* strbuffer, enum LogLevel level)
 {
     while (m_flag == false) {
         m_flag = CTcpServerInit();
     }
 
-    char strbufferHead[24];
-    memset(strbufferHead, 0, sizeof(strbufferHead));
-    sprintf_s(strbufferHead, "LogLevel:%d", level);
-    if (m_tcpServer.Send(strbufferHead, (int)strlen(strbufferHead)) <= 0) {
+    char strbufferLogLevel[24];
+    memset(strbufferLogLevel, 0, sizeof(strbufferLogLevel));
+    sprintf_s(strbufferLogLevel, "LogLevel:%d", level);
+    if (m_tcpServer.Send(strbufferLogLevel, (int)strlen(strbufferLogLevel)) <= 0) {
         m_flag = false;
         return m_flag;
     }
@@ -53,7 +74,7 @@ bool _stdcall SendLog(char* strbuffer, enum LogLevel level, enum  LogDisplayWind
         return m_flag;
     }
 
-    printf("LogLevel：%s ,发送：%s\n", strbufferHead ,strbuffer);
+    printf("LogLevel：%d ,发送：%s\n", level,strbuffer);
 	return m_flag;
 }
 bool _stdcall SendImage(unsigned char* pSrc, unsigned int pixel_width, unsigned int pixel_height, enum ImagePixelFormat type)
@@ -68,14 +89,20 @@ bool _stdcall SendImage(unsigned char* pSrc, unsigned int pixel_width, unsigned 
         m_flag = CTcpServerInit();
     }
 
-    char strbufferHead[10];
-    memset(strbufferHead, 0, sizeof(strbufferHead));
-    sprintf_s(strbufferHead, "SendImage");
-    if (m_tcpServer.Send(strbufferHead, (int)strlen(strbufferHead)) <= 0) {
+    char strbufferImageInfo[1024];
+    memset(strbufferImageInfo, 0, sizeof(strbufferImageInfo));
+    sprintf_s(strbufferImageInfo, "SendImage pixel_width = %d, pixel_height = %d", pixel_width , pixel_height);
+    if (m_tcpServer.Send(strbufferImageInfo, (int)strlen(strbufferImageInfo)) <= 0) {
         m_flag = false;
         return m_flag;
     }
-
+    char strbufferImageData[1024];
+    memset(strbufferImageData, 0, sizeof(strbufferImageData));
+    sprintf_s(strbufferImageData, "SendImageData Begin !!!");
+    if (m_tcpServer.Send(strbufferImageData, (int)strlen(strbufferImageData)) <= 0) {
+        m_flag = false;
+        return m_flag;
+    }
     unsigned char* pDst = NULL;
     if (ImagePixelFormatToRGBA(pSrc, pDst, pixel_width, pixel_height, type) == false) {
         printf("ImagePixelFormatToRGBA error :pSrc = %s, pixel_width = %d, pixel_height = %d", pSrc, pixel_width, pixel_height);

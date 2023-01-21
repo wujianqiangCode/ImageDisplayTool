@@ -153,7 +153,7 @@ void I420ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 void YV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 	unsigned int pixel_width, unsigned int pixel_height) {
 	
-	register int U, V, R, G, B, V2, U5, UV;
+	register int U, V, R, G, B, V2, U5, UV;//使用cpu内部寄存器,提升效率
 	register int Y0, Y1, Y2, Y3;
 	rgba = new unsigned char[pixel_width * pixel_height * 4]();
 	unsigned int size = pixel_width * pixel_height;
@@ -345,6 +345,58 @@ void NV21ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 	}
 }
 
+#define vpSAT(c) \
+        if (c & (~255)) { if (c < 0) c = 0; else c = 255; }
+
+void YUYVToRGBA(const unsigned char* yuyv, unsigned char* rgba,
+	int pixel_width, int pixel_height) {
+
+	rgba = new unsigned char[pixel_width * pixel_height * 4]();
+	const unsigned char* s;
+	unsigned char* d;
+	int w, h, c;
+	int r, g, b, cr, cg, cb, y1, y2;
+
+	h = (int)pixel_height;
+	w = (int)pixel_width;
+	s = yuyv;
+	d = rgba;
+	while (h--) {
+		c = w >> 1;
+		while (c--) {
+			y1 = *s++;
+			cb = ((*s - 128) * 454) >> 8;
+			cg = (*s++ - 128) * 88;
+			y2 = *s++;
+			cr = ((*s - 128) * 359) >> 8;
+			cg = (cg + (*s++ - 128) * 183) >> 8;
+
+			r = y1 + cr;
+			b = y1 + cb;
+			g = y1 - cg;
+			vpSAT(r);
+			vpSAT(g);
+			vpSAT(b);
+
+			*d++ = static_cast<unsigned char>(r);
+			*d++ = static_cast<unsigned char>(g);
+			*d++ = static_cast<unsigned char>(b);
+			*d++ = 0;
+
+			r = y2 + cr;
+			b = y2 + cb;
+			g = y2 - cg;
+			vpSAT(r);
+			vpSAT(g);
+			vpSAT(b);
+
+			*d++ = static_cast<unsigned char>(r);
+			*d++ = static_cast<unsigned char>(g);
+			*d++ = static_cast<unsigned char>(b);
+			*d++ = 0;
+		}
+	}
+}
 
 
 bool ImagePixelFormatToRGBA(unsigned char* pSrc, unsigned char* pDst, unsigned int pixel_width, unsigned int pixel_height, enum ImagePixelFormat type) {
@@ -378,6 +430,10 @@ bool ImagePixelFormatToRGBA(unsigned char* pSrc, unsigned char* pDst, unsigned i
 	}
 	else if (type == NV21) {
 		NV21ToRGBA(pSrc, pDst, pixel_width, pixel_height);
+		return true;
+	}
+	else if (type == YUYV) {
+		YUYVToRGBA(pSrc, pDst, pixel_width, pixel_height);
 		return true;
 	}
 	else {

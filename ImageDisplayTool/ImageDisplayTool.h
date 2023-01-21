@@ -10,11 +10,9 @@ enum ImagePixelFormat {
 	YV12,
 	NV12,
 	NV21,
+	YUYV,
 };
-enum LogDisplayWindows {
-	LOG_SERVER,
-	LOG_TERMINAL,
-};
+
 enum LogLevel {
 	LOG_ERROR,
 	LOG_WARNING,
@@ -26,8 +24,8 @@ enum LogLevel {
 extern "C"
 {
 #endif
-	void _stdcall SetLogDisplayLevel(LogLevel level, int tcpServerPort = 5051);
-	bool _stdcall SendLog(char* strbuffer, enum LogLevel level, enum  LogDisplayWindows target);
+	bool _stdcall SetLogDisplayLevel(LogLevel level = LOG_DEBUG, int tcpServerPort = 5051);
+	bool _stdcall SendLog(char* strbuffer, enum LogLevel level);
 	bool _stdcall SendImage(unsigned char* pSrc, unsigned int pixel_width, unsigned int pixel_height, enum ImagePixelFormat type);
 #ifdef _CPLUSPLUS
 }
