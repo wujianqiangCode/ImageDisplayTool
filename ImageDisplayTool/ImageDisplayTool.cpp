@@ -27,7 +27,7 @@ bool CTcpServerInit() {
     return m_flag;
 }
 
-bool _stdcall SetLogDisplayLevelAndTcpServerPort(LogLevel level, int tcpServerPort)
+bool _stdcall SetLogDisplayLevelAndTcpServerPort(enum LogLevel level, int tcpServerPort)
 {
     m_tcpServerPort = tcpServerPort;
     while (m_flag == false) {

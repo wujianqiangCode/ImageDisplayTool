@@ -5,22 +5,36 @@ CTcpServer::CTcpServer()
 {
     // 构造函数初始化socket
     m_listenfd = m_clientfd = 0;
+
+#ifdef _WIN32
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        printf("WSAStartup failed\n");
+    }
+#endif
 }
 
 CTcpServer::~CTcpServer()
 {
-    if (m_listenfd != 0)
+#ifdef _WIN32
+
+    WSACleanup();
+#endif
+
+    if (m_listenfd != 0) {
 #ifdef _WIN32
         closesocket(m_listenfd);
 #else
         close(m_listenfd);  // 析构函数关闭socket
 #endif
-    if (m_clientfd != 0)
+    }
+    if (m_clientfd != 0) {
 #ifdef _WIN32
         closesocket(m_clientfd);
 #else
         close(m_clientfd);  // 析构函数关闭socket
 #endif
+    }
 }
 
 // 初始化服务端的socket，port为通信端口
@@ -34,12 +48,15 @@ bool CTcpServer::InitServer(int port)
     servaddr.sin_family = AF_INET;  // 协议族，在socket编程中只能是AF_INET
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);  // 本主机的任意ip地址
     servaddr.sin_port = htons(port);  // 绑定通信端口
+
     if (bind(m_listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0)
     {
 #ifdef _WIN32
         closesocket(m_listenfd);
+        printf("bind failed %d \n", WSAGetLastError());
 #else
         close(m_listenfd);
+        printf("bind failed %d \n", geterror());
 #endif
         m_listenfd = 0;
         return false;
@@ -49,8 +66,10 @@ bool CTcpServer::InitServer(int port)
     if (listen(m_listenfd, 5) != 0) {
 #ifdef _WIN32
         closesocket(m_listenfd);
+        printf("listen failed %d \n", WSAGetLastError());
 #else
         close(m_listenfd);
+        printf("listen failed %d \n", geterror());
 #endif
         m_listenfd = 0;
         return false;

@@ -24,7 +24,7 @@ enum LogLevel {
 extern "C"
 {
 #endif
-	bool _stdcall SetLogDisplayLevel(LogLevel level = LOG_DEBUG, int tcpServerPort = 5051);
+	bool _stdcall SetLogDisplayLevelAndTcpServerPort(enum LogLevel level = LOG_DEBUG, int tcpServerPort = 5051);
 	bool _stdcall SendLog(char* strbuffer, enum LogLevel level);
 	bool _stdcall SendImage(unsigned char* pSrc, unsigned int pixel_width, unsigned int pixel_height, enum ImagePixelFormat type);
 #ifdef _CPLUSPLUS
