@@ -10,12 +10,12 @@ QtRenderTool::~QtRenderTool()
 
 void QtRenderTool::paintEvent(QPaintEvent* event)
 {
-    QPainter painter(this);
+    auto paintArea = this->ui.imageArea;
+    QPainter painter(paintArea);
     int w = 500;
     int h = 800;
     QImage image(w, h, QImage::Format::Format_RGB888);  // RGB888 每个像素点的每个颜色使用8位表示，一个像素点占用3个字节
     unsigned char* data = image.bits();  // 图像所使用的内存
-
     painter.begin(this);
 
     /* 改变每个像素点的颜色 */
@@ -31,6 +31,9 @@ void QtRenderTool::paintEvent(QPaintEvent* event)
         }
     }
 
+    auto area_width = paintArea->width();
+    auto area_height= paintArea->height();
+    image= image.scaled(area_width, area_height);
     painter.drawImage(0, 0, image);
 
     painter.end();
