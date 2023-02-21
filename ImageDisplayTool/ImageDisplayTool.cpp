@@ -3,26 +3,26 @@
 #include "ImagePixelFormatToRGBA.h"
 
 #include <stdio.h>
-
+#include<string.h>
 
 static CTcpServer m_tcpServer;
 static int m_tcpServerPort = 5051;
 static bool m_flag = false;
 bool CTcpServerInit() {
-    
+
     if (m_tcpServer.InitServer(m_tcpServerPort) == false){
-        printf("m_tcpServer.InitServer(5051) failed,exit...\n"); 
+        printf("m_tcpServer.InitServer(5051) failed,exit...\n");
         m_flag = false;
         return m_flag;
     }
 
     if (m_tcpServer.Accept() == false) {
-        printf("m_tcpServer.Accept() failed,exit...\n"); 
+        printf("m_tcpServer.Accept() failed,exit...\n");
         m_flag = false;
         return m_flag;
     }
 
-    printf("¿Í»§¶ËÒÑÁ¬½Ó¡£\n");
+    printf("å®¢æˆ·ç«¯å·²è¿žæŽ¥ã€‚\n");
     m_flag = true;
     return m_flag;
 }
@@ -36,21 +36,31 @@ bool _stdcall SetLogDisplayLevelAndTcpServerPort(enum LogLevel level, int tcpSer
 
     char strbufferSetLogDisplayLevel[64];
     memset(strbufferSetLogDisplayLevel, 0, sizeof(strbufferSetLogDisplayLevel));
-    sprintf_s(strbufferSetLogDisplayLevel, "SetLogDisplayLevel:%d", level);
+#ifdef __linux__
+    snprintf(strbufferSetLogDisplayLevel,sizeof("SetLogDisplayLevel:%d"),"SetLogDisplayLevel:%d", level);
+#else
+	sprintf_s(strbufferSetLogDisplayLevel, "SetLogDisplayLevel:%d", level);
+#endif
     if (m_tcpServer.Send(strbufferSetLogDisplayLevel, (int)strlen(strbufferSetLogDisplayLevel)) <= 0) {
+
         m_flag = false;
         return m_flag;
     }
 
     char strbufferSetTcpServerPort[64];
     memset(strbufferSetTcpServerPort, 0, sizeof(strbufferSetTcpServerPort));
-    sprintf_s(strbufferSetTcpServerPort, "SetTcpServerPort:%d", tcpServerPort);
+#ifdef __linux__
+	snprintf(strbufferSetTcpServerPort, sizeof("SetTcpServerPort:%d"), "SetTcpServerPort:%d", tcpServerPort);
+#else
+	sprintf_s(strbufferSetLogDisplayLevel, "SetTcpServerPort:%d", tcpServerPort);
+#endif
+
     if (m_tcpServer.Send(strbufferSetTcpServerPort, (int)strlen(strbufferSetTcpServerPort)) <= 0) {
         m_flag = false;
         return m_flag;
     }
 
-    printf("SetLogDisplayLevel£º%s ,SetTcpServerPortLogLevel£º%s\n", strbufferSetLogDisplayLevel, strbufferSetTcpServerPort);
+    printf("SetLogDisplayLevel:%s ,SetTcpServerPortLogLevel:%s\n", strbufferSetLogDisplayLevel, strbufferSetTcpServerPort);
     return m_flag;
 }
 
@@ -63,7 +73,12 @@ bool _stdcall SendLog(char* strbuffer, enum LogLevel level)
 
     char strbufferLogLevel[24];
     memset(strbufferLogLevel, 0, sizeof(strbufferLogLevel));
-    sprintf_s(strbufferLogLevel, "LogLevel:%d", level);
+#ifdef __linux__
+	snprintf(strbufferLogLevel, sizeof("LogLevel:%d"), "LogLevel:%d", level);
+#else
+	sprintf_s(strbufferLogLevel, "LogLevel:%d", level);
+#endif
+
     if (m_tcpServer.Send(strbufferLogLevel, (int)strlen(strbufferLogLevel)) <= 0) {
         m_flag = false;
         return m_flag;
@@ -74,11 +89,11 @@ bool _stdcall SendLog(char* strbuffer, enum LogLevel level)
         return m_flag;
     }
 
-    printf("LogLevel£º%d ,·¢ËÍ£º%s\n", level,strbuffer);
+    printf("LogLevel:%d ,å‘é€:%s\n", level,strbuffer);
 	return m_flag;
 }
-bool _stdcall SendImage(unsigned char* pSrc, unsigned int pixel_width, unsigned int pixel_height, enum ImagePixelFormat type)
-{	
+bool _stdcall SendImage(unsigned char* pSrc, unsigned int pixel_width, unsigned int pixel_height, enum ImagePixelFormat type, long long pts)
+{
 	if((pSrc == nullptr) || (pixel_width <=  0) || (pixel_height <= 0))
 	{
 		printf("SendImage: error  pSrc = %s, pixel_width = %d, pixel_height = %d", pSrc, pixel_width, pixel_height);
@@ -91,14 +106,22 @@ bool _stdcall SendImage(unsigned char* pSrc, unsigned int pixel_width, unsigned 
 
     char strbufferImageInfo[1024];
     memset(strbufferImageInfo, 0, sizeof(strbufferImageInfo));
-    sprintf_s(strbufferImageInfo, "SendImage pixel_width = %d, pixel_height = %d", pixel_width , pixel_height);
-    if (m_tcpServer.Send(strbufferImageInfo, (int)strlen(strbufferImageInfo)) <= 0) {
+#ifdef __linux__
+    snprintf(strbufferImageInfo,1024 ,"SendImage pixel_width = %d, pixel_height = %d, pts = %lld", pixel_width , pixel_height, pts);
+#else
+	sprintf_s(strbufferImageInfo, "SendImage pixel_width = %d, pixel_height = %d", pts = %lld", pixel_width, pixel_height, pts);
+#endif
+	if (m_tcpServer.Send(strbufferImageInfo, (int)strlen(strbufferImageInfo)) <= 0) {
         m_flag = false;
         return m_flag;
     }
     char strbufferImageData[1024];
     memset(strbufferImageData, 0, sizeof(strbufferImageData));
-    sprintf_s(strbufferImageData, "SendImageData Begin !!!");
+#ifdef __linux__
+    snprintf(strbufferImageData, sizeof("SendImageData Begin !!!"), "SendImageData Begin !!!");
+#else
+	sprintf_s(strbufferImageData, "SendImageData Begin !!!");
+#endif
     if (m_tcpServer.Send(strbufferImageData, (int)strlen(strbufferImageData)) <= 0) {
         m_flag = false;
         return m_flag;
@@ -114,7 +137,7 @@ bool _stdcall SendImage(unsigned char* pSrc, unsigned int pixel_width, unsigned 
         return m_flag;
     }
 
-    printf("·¢ËÍ£º%s\n", pSrc);
+    printf("å‘é€ï¼š%s\n", pSrc);
     return m_flag;
-	
+
 }
