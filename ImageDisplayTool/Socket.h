@@ -10,32 +10,34 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+
+#define SOCKET int
 #endif
 
 class CTcpServer
 {
 public:
-    SOCKET m_listenfd;   // ·şÎñ¶ËÓÃÓÚ¼àÌıµÄsocket
-    SOCKET m_clientfd;   // ¿Í»§¶ËÁ¬ÉÏÀ´µÄsocket
+    SOCKET m_listenfd;   // æœåŠ¡ç«¯ç”¨äºç›‘å¬çš„socket
+    SOCKET m_clientfd;   // å®¢æˆ·ç«¯è¿ä¸Šæ¥çš„socket
 
     CTcpServer();
 
-    bool InitServer(int port);  // ³õÊ¼»¯·şÎñ¶Ë
+    bool InitServer(int port);  // åˆå§‹åŒ–æœåŠ¡ç«¯
 
-    bool Accept();  // µÈ´ı¿Í»§¶ËµÄÁ¬½Ó
+    bool Accept();  // ç­‰å¾…å®¢æˆ·ç«¯çš„è¿æ¥
 
     
 #ifdef _WIN32
-    // Ïò¶Ô¶Ë·¢ËÍ±¨ÎÄ
+    // å‘å¯¹ç«¯å‘é€æŠ¥æ–‡
     int  Send(const char* buf, const int buflen);
     
-    // ½ÓÊÕ¶Ô¶ËµÄ±¨ÎÄ
+    // æ¥æ”¶å¯¹ç«¯çš„æŠ¥æ–‡
     int  Recv(char* buf, const int buflen);
 #else
-    // Ïò¶Ô¶Ë·¢ËÍ±¨ÎÄ
+    // å‘å¯¹ç«¯å‘é€æŠ¥æ–‡
     int  Send(const void* buf, const int buflen);
     
-    // ½ÓÊÕ¶Ô¶ËµÄ±¨ÎÄ
+    // æ¥æ”¶å¯¹ç«¯çš„æŠ¥æ–‡
     int  Recv(void* buf, const int buflen);
 #endif
 
