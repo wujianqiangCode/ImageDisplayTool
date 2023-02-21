@@ -1,9 +1,13 @@
 #include "Socket.h"
+#include <string.h>
+#ifdef __linux__
+#include <errno.h>
+#endif
 #define _CRT_SECURE_NO_WARNINGS
 
 CTcpServer::CTcpServer()
 {
-    // ¹¹Ôìº¯Êı³õÊ¼»¯socket
+    // æ„é€ å‡½æ•°åˆå§‹åŒ–socket
     m_listenfd = m_clientfd = 0;
 
 #ifdef _WIN32
@@ -25,51 +29,57 @@ CTcpServer::~CTcpServer()
 #ifdef _WIN32
         closesocket(m_listenfd);
 #else
-        close(m_listenfd);  // Îö¹¹º¯Êı¹Ø±Õsocket
+        close(m_listenfd);  // ææ„å‡½æ•°å…³é—­socket
 #endif
     }
     if (m_clientfd != 0) {
 #ifdef _WIN32
         closesocket(m_clientfd);
 #else
-        close(m_clientfd);  // Îö¹¹º¯Êı¹Ø±Õsocket
+        close(m_clientfd);  // ææ„å‡½æ•°å…³é—­socket
 #endif
     }
 }
 
-// ³õÊ¼»¯·şÎñ¶ËµÄsocket£¬portÎªÍ¨ĞÅ¶Ë¿Ú
+// åˆå§‹åŒ–æœåŠ¡ç«¯çš„socketï¼Œportä¸ºé€šä¿¡ç«¯å£
 bool CTcpServer::InitServer(int port)
 {
-    m_listenfd = socket(AF_INET, SOCK_STREAM, 0);  // ´´½¨·şÎñ¶ËµÄsocket
+    m_listenfd = socket(AF_INET, SOCK_STREAM, 0);  // åˆ›å»ºæœåŠ¡ç«¯çš„socket
 
-    // °Ñ·şÎñ¶ËÓÃÓÚÍ¨ĞÅµÄµØÖ·ºÍ¶Ë¿Ú°ó¶¨µ½socketÉÏ
-    struct sockaddr_in servaddr;    // ·şÎñ¶ËµØÖ·ĞÅÏ¢µÄÊı¾İ½á¹¹
+    // æŠŠæœåŠ¡ç«¯ç”¨äºé€šä¿¡çš„åœ°å€å’Œç«¯å£ç»‘å®šåˆ°socketä¸Š
+    struct sockaddr_in servaddr;    // æœåŠ¡ç«¯åœ°å€ä¿¡æ¯çš„æ•°æ®ç»“æ„
     memset(&servaddr, 0, sizeof(servaddr));
-    servaddr.sin_family = AF_INET;  // Ğ­Òé×å£¬ÔÚsocket±à³ÌÖĞÖ»ÄÜÊÇAF_INET
-    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);  // ±¾Ö÷»úµÄÈÎÒâipµØÖ·
-    servaddr.sin_port = htons(port);  // °ó¶¨Í¨ĞÅ¶Ë¿Ú
-
-    if (bind(m_listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0)
-    {
+    servaddr.sin_family = AF_INET;  // åè®®æ—ï¼Œåœ¨socketç¼–ç¨‹ä¸­åªèƒ½æ˜¯AF_INET
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);  // æœ¬ä¸»æœºçš„ä»»æ„ipåœ°å€
+    servaddr.sin_port = htons(port);  // ç»‘å®šé€šä¿¡ç«¯å£
+#ifdef __linux__
+    if (errno = bind(m_listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0){
+#else
+    if (bind(m_listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0){
+#endif
 #ifdef _WIN32
         closesocket(m_listenfd);
         printf("bind failed %d \n", WSAGetLastError());
 #else
         close(m_listenfd);
-        printf("bind failed %d \n", geterror());
+        printf("bind failed %d \n", strerror(errno));
 #endif
         m_listenfd = 0;
         return false;
     }
 
-    // °ÑsocketÉèÖÃÎª¼àÌıÄ£Ê½
+    // æŠŠsocketè®¾ç½®ä¸ºç›‘å¬æ¨¡å¼
+#ifdef __linux__
+   if (errno = listen(m_listenfd, 5) != 0) {
+#else
     if (listen(m_listenfd, 5) != 0) {
+#endif
 #ifdef _WIN32
         closesocket(m_listenfd);
         printf("listen failed %d \n", WSAGetLastError());
 #else
         close(m_listenfd);
-        printf("listen failed %d \n", geterror());
+        printf("bind failed %d \n", strerror(errno));
 #endif
         m_listenfd = 0;
         return false;
@@ -87,12 +97,12 @@ bool CTcpServer::Accept()
 }
 
 #ifdef _WIN32
-// Ïò¶Ô¶Ë·¢ËÍ±¨ÎÄ
+// å‘å¯¹ç«¯å‘é€æŠ¥æ–‡
 int  CTcpServer::Send(const char* buf, const int buflen) {
     return send(m_clientfd, buf, buflen, 0);
 }
 
-// ½ÓÊÕ¶Ô¶ËµÄ±¨ÎÄ
+// æ¥æ”¶å¯¹ç«¯çš„æŠ¥æ–‡
 int  CTcpServer::Recv(char* buf, const int buflen) {
     return recv(m_clientfd, buf, buflen, 0);
 }
