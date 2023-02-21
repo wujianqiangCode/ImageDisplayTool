@@ -153,7 +153,7 @@ void I420ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 void YV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 	unsigned int pixel_width, unsigned int pixel_height) {
 	
-	register int U, V, R, G, B, V2, U5, UV;// π”√cpuƒ⁄≤øºƒ¥Ê∆˜,Ã·…˝–ß¬ 
+	register int U, V, R, G, B, V2, U5, UV;//‰ΩøÁî®cpuÂÜÖÈÉ®ÂØÑÂ≠òÂô®,ÊèêÂçáÊïàÁéá
 	register int Y0, Y1, Y2, Y3;
 	rgba = new unsigned char[pixel_width * pixel_height * 4]();
 	unsigned int size = pixel_width * pixel_height;
@@ -432,9 +432,61 @@ bool ImagePixelFormatToRGBA(unsigned char* pSrc, unsigned char* pDst, unsigned i
 		NV21ToRGBA(pSrc, pDst, pixel_width, pixel_height);
 		return true;
 	}
+	else if (type == I422) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
+	}
+	else if (type == YV16) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
+	}
+	else if (type == NV16) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
+	}
+	else if (type == NV61) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
+	}
+	else if (type == NV61) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
+	}
 	else if (type == YUYV) {
 		YUYVToRGBA(pSrc, pDst, pixel_width, pixel_height);
 		return true;
+	}
+	else if (type == YUVY) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
+	}
+	else if (type == VYUY) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
+	}
+	else if (type == UYVY) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
+	}
+	else if (type == I444) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
+	}
+	else if (type == YV24) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
+	}
+	else if (type == NV24) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
+	}
+	else if (type == NV42) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
+	}
+	else if (type == IYUV) {
+		printf("ImagePixelFormat error ,exit...\n");
+		return false;
 	}
 	else {
 		printf("ImagePixelFormat error ,exit...\n");
