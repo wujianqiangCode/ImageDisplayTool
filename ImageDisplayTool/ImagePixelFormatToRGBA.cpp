@@ -1,5 +1,6 @@
 #include "ImagePixelFormatToRGBA.h"
 #include <stdio.h>
+#include <GL/gl.h>
 
 void BGRAToRGBA(const unsigned char* bgra, unsigned char* rgba,
 	unsigned int pixel_width, unsigned int pixel_height) {
@@ -399,98 +400,121 @@ void YUYVToRGBA(const unsigned char* yuyv, unsigned char* rgba,
 }
 
 
-bool ImagePixelFormatToRGBA(unsigned char* pSrc, unsigned char* pDst, unsigned int pixel_width, unsigned int pixel_height, enum ImagePixelFormat type) {
-	if (type == RGBA) {
-		pDst = pSrc;
-		return true;
+bool ImagePixelFormatToRGBA(IMAGE image, unsigned char* pDst) {
+
+	bool flag =true;
+	if(image.type == IF_RGB){
+
+		switch (image.rgb_info.format)
+		{
+		case RGBA:
+			pDst = image.rgb_info.pData;
+			break;
+		case BGRA:
+			BGRAToRGBA(image.rgb_info.pData, pDst, image.pixel_width, image.pixel_height);
+			break;
+		case ABGR:
+			ABGRToRGBA(image.rgb_info.pData, pDst, image.pixel_width, image.pixel_height);
+			break;
+		case ARGB:
+			ARGBToRGBA(image.rgb_info.pData, pDst, image.pixel_width, image.pixel_height);
+			break;
+		default:
+			flag = false;
+			break;
+		}
 	}
-	else if (type == BGRA) {
-		BGRAToRGBA(pSrc, pDst, pixel_width, pixel_height);
-		return true;
+	else if(image.type == IF_YUV){
+		
+		switch (image.yuv_info.format)
+		{
+		case I420:
+			I420ToRGBA(image.yuv_info.pData, pDst, image.pixel_width, image.pixel_height);
+			break;
+		case YV12:
+			YV12ToRGBA(image.yuv_info.pData, pDst, image.pixel_width, image.pixel_height);
+			break;
+		case NV12:
+			NV12ToRGBA(image.yuv_info.pData, pDst, image.pixel_width, image.pixel_height);
+			break;
+		case NV21:
+			NV21ToRGBA(image.yuv_info.pData, pDst, image.pixel_width, image.pixel_height);
+			break;
+		case I422:
+		case YV16:
+		case NV16:
+		case NV61:
+			printf("ImagePixelFormat error ,exit...\n");
+			flag = false;
+			break;
+		case YUYV:
+			YUYVToRGBA(image.yuv_info.pData, pDst, image.pixel_width, image.pixel_height);
+			break;
+		case YUVY:
+		case VYUY:
+		case UYVY:
+		case I444:
+		case YV24:
+		case NV24:
+		case NV42:
+		case IYUV:
+			printf("ImagePixelFormat error ,exit...\n");
+			flag = false;
+			break;
+		default:
+			flag = false;
+			break;
+		}
 	}
-	else if (type == ABGR) {
-		ABGRToRGBA(pSrc, pDst, pixel_width, pixel_height);
-		return true;
-	}
-	else if (type == ARGB) {
-		ARGBToRGBA(pSrc, pDst, pixel_width, pixel_height);
-		return true;
-	}
-	else if (type == I420) {
-		I420ToRGBA(pSrc, pDst, pixel_width, pixel_height);
-		return true;
-	}
-	else if (type == YV12) {
-		YV12ToRGBA(pSrc, pDst, pixel_width, pixel_height);
-		return true;
-	}
-	else if (type == NV12) {
-		NV12ToRGBA(pSrc, pDst, pixel_width, pixel_height);
-		return true;
-	}
-	else if (type == NV21) {
-		NV21ToRGBA(pSrc, pDst, pixel_width, pixel_height);
-		return true;
-	}
-	else if (type == I422) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
-	}
-	else if (type == YV16) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
-	}
-	else if (type == NV16) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
-	}
-	else if (type == NV61) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
-	}
-	else if (type == NV61) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
-	}
-	else if (type == YUYV) {
-		YUYVToRGBA(pSrc, pDst, pixel_width, pixel_height);
-		return true;
-	}
-	else if (type == YUVY) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
-	}
-	else if (type == VYUY) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
-	}
-	else if (type == UYVY) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
-	}
-	else if (type == I444) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
-	}
-	else if (type == YV24) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
-	}
-	else if (type == NV24) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
-	}
-	else if (type == NV42) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
-	}
-	else if (type == IYUV) {
-		printf("ImagePixelFormat error ,exit...\n");
-		return false;
+	else if(image.type == IF_OpenGL){
+		
+		switch (image.opengl_info.format)
+		{
+		case OpenGL_RGBA:
+			GLuint id = (GLuint)image.opengl_info.texture_id[0];
+    		pDst = new unsigned char[image.pixel_width * image.pixel_height * 4]();
+			glBindTexture(image.opengl_info.target,id);
+    		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, pDst);
+			break;
+		case OpenGL_BGRA:
+			GLuint id = (GLuint)image.opengl_info.texture_id[0];
+    		pDst = new unsigned char[image.pixel_width * image.pixel_height * 4]();
+			glBindTexture(image.opengl_info.target,id);
+    		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, pDst);
+			break;
+		case OpenGL_NV12:
+			GLuint y_id = (GLuint)image.opengl_info.texture_id[0];
+			GLuint uv_id = (GLuint)image.opengl_info.texture_id[1];
+			
+    		unsigned char* pNV12Data = new unsigned char[image.pixel_width * image.pixel_height * 3/ 2]();
+			glBindTexture(image.opengl_info.target,y_id);
+    		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)pNV12Data);
+			glBindTexture(image.opengl_info.target,uv_id);
+    		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)(&pNV12Data[image.pixel_width * image.pixel_height]));
+			
+			NV12ToRGBA(pNV12Data, pDst, image.pixel_width, image.pixel_height);
+			break;
+		case OpenGL_NV21:
+			GLuint y_id = (GLuint)image.opengl_info.texture_id[0];
+			GLuint vu_id = (GLuint)image.opengl_info.texture_id[1];
+			
+    		unsigned char* pNV21Data = new unsigned char[image.pixel_width * image.pixel_height * 3/ 2]();
+			glBindTexture(image.opengl_info.target,y_id);
+    		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)pNV21Data);
+			glBindTexture(image.opengl_info.target,uv_id);
+    		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)(&pNV21Data[image.pixel_width * image.pixel_height]));
+			
+			NV21ToRGBA(pNV21Data, pDst, image.pixel_width, image.pixel_height);
+			break;	
+		default:
+			flag = false;
+			break;
+		}
 	}
 	else {
 		printf("ImagePixelFormat error ,exit...\n");
-		return false;
+		flag = false;
+		return flag;
 	}
-
+	return flag;
 }
