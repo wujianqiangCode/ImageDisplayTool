@@ -5,6 +5,6 @@
 #include "ImageDisplayTool.h"
 
 
-bool ImagePixelFormatToRGBA(unsigned char* pSrc, unsigned char* pDst, unsigned int pixel_width, unsigned int pixel_height, enum ImagePixelFormat type);
+bool ImagePixelFormatToRGBA(IMAGE image, unsigned char* pDst);
 
 #endif
