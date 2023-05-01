@@ -185,6 +185,11 @@ enum LogLevel {
 extern "C"
 {
 #endif
+
+/*
+	端口号从1025到49151是注册端口：这些端口多数没有明确的定义服务对象，不同程序可根据实际需要自己定义，咱们可以使用
+	socket服务器和客户端的端口只能是49152到65535：因为计算机之间相互通信一般采用这两种通信协议，TCP协议端口和UDP协议端口
+*/	
 	bool _stdcall SetTcpServerPort(int tcpServerPort = 5051);
 
 	bool _stdcall SetLogDisplayLevel(enum LogLevel level = LOG_DEBUG);
@@ -195,3 +200,7 @@ extern "C"
 #ifdef _CPLUSPLUS
 }
 #endif
+
+
+
+

@@ -22,7 +22,7 @@ bool CTcpServerInit() {
         return m_flag;
     }
 
-    printf("å®¢æˆ·ç«¯å·²è¿æ¥ã€‚\n");
+    printf("¿Í»§¶ËÒÑÁ¬½Ó¡£\n");
     m_flag = true;
     return m_flag;
 }
@@ -91,12 +91,12 @@ bool _stdcall SendLog(char* strbuffer, enum LogLevel level)
         return m_flag;
     }
 
-    printf("LogLevel:%d ,å‘é€:%s\n", level,strbuffer);
+    printf("LogLevel:%d ,·¢ËÍ:%s\n", level,strbuffer);
 	return m_flag;
 }
 bool _stdcall SendImage(IMAGE image)
 {
-    
+
 	if((image.pixel_width <=  0) || (image.pixel_height <=  0) || (image.pts < 0))
 	{
 		printf("SendImage: error pixel_width = %d, pixel_height = %d, pts =%lld",image.pixel_width, image.pixel_height, image.pts);
@@ -131,7 +131,7 @@ bool _stdcall SendImage(IMAGE image)
     }
     unsigned char* pDst = NULL;
     if (ImagePixelFormatToRGBA(image, pDst) == false) {
-        printf("ImagePixelFormatToRGBA error :pSrc = %s, pixel_width = %d, pixel_height = %d", pSrc, pixel_width, pixel_height);
+        printf("ImagePixelFormatToRGBA error :pixel_width = %d, pixel_height = %d,  pts = %lld", image.pixel_width, image.pixel_height, image.pts);
         return false;
     }
 
@@ -140,6 +140,6 @@ bool _stdcall SendImage(IMAGE image)
         return m_flag;
     }
 
-    printf("å‘é€ï¼š%s\n", pDst);
+    printf("·¢ËÍ£º%s\n", pDst);
     return m_flag;
 }

@@ -40,7 +40,7 @@ void ABGRToRGBA(const unsigned char* abgr, unsigned char* rgba,
 }
 void ARGBToRGBA(const unsigned char* argb, unsigned char* rgba,
 	unsigned int pixel_width, unsigned int pixel_height) {
-	
+
 	int offset = 0;
 	rgba = new unsigned char[pixel_width * pixel_height * 4]();
 	for (unsigned int y = 0; y < pixel_height; y++) {
@@ -153,8 +153,8 @@ void I420ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 
 void YV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 	unsigned int pixel_width, unsigned int pixel_height) {
-	
-	register int U, V, R, G, B, V2, U5, UV;//ä½¿ç”¨cpuå†…éƒ¨å¯„å­˜å™¨,æå‡æ•ˆçŽ‡
+
+	register int U, V, R, G, B, V2, U5, UV;//Ê¹ÓÃcpuÄÚ²¿¼Ä´æÆ÷,ÌáÉýÐ§ÂÊ
 	register int Y0, Y1, Y2, Y3;
 	rgba = new unsigned char[pixel_width * pixel_height * 4]();
 	unsigned int size = pixel_width * pixel_height;
@@ -243,7 +243,7 @@ void YV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 
 void NV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 	unsigned int pixel_width, unsigned int pixel_height) {
-	
+
 	//nv12
 	int total = pixel_width * pixel_height;
 	rgba = new unsigned char[pixel_width * pixel_height * 4]();
@@ -425,7 +425,7 @@ bool ImagePixelFormatToRGBA(IMAGE image, unsigned char* pDst) {
 		}
 	}
 	else if(image.type == IF_YUV){
-		
+
 		switch (image.yuv_info.format)
 		{
 		case I420:
@@ -467,48 +467,62 @@ bool ImagePixelFormatToRGBA(IMAGE image, unsigned char* pDst) {
 		}
 	}
 	else if(image.type == IF_OpenGL){
-		
+
 		switch (image.opengl_info.format)
 		{
-		case OpenGL_RGBA:
+		case OpenGL_RGBA:{
+
 			GLuint id = (GLuint)image.opengl_info.texture_id[0];
     		pDst = new unsigned char[image.pixel_width * image.pixel_height * 4]();
 			glBindTexture(image.opengl_info.target,id);
     		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, pDst);
 			break;
-		case OpenGL_BGRA:
+		}
+		case OpenGL_BGRA:{
+
 			GLuint id = (GLuint)image.opengl_info.texture_id[0];
     		pDst = new unsigned char[image.pixel_width * image.pixel_height * 4]();
 			glBindTexture(image.opengl_info.target,id);
     		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, pDst);
 			break;
-		case OpenGL_NV12:
+		}
+
+		case OpenGL_NV12:{
+
 			GLuint y_id = (GLuint)image.opengl_info.texture_id[0];
 			GLuint uv_id = (GLuint)image.opengl_info.texture_id[1];
-			
+
     		unsigned char* pNV12Data = new unsigned char[image.pixel_width * image.pixel_height * 3/ 2]();
 			glBindTexture(image.opengl_info.target,y_id);
     		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)pNV12Data);
 			glBindTexture(image.opengl_info.target,uv_id);
     		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)(&pNV12Data[image.pixel_width * image.pixel_height]));
-			
+
 			NV12ToRGBA(pNV12Data, pDst, image.pixel_width, image.pixel_height);
 			break;
-		case OpenGL_NV21:
+		}
+
+		case OpenGL_NV21:{
+
 			GLuint y_id = (GLuint)image.opengl_info.texture_id[0];
 			GLuint vu_id = (GLuint)image.opengl_info.texture_id[1];
-			
+
     		unsigned char* pNV21Data = new unsigned char[image.pixel_width * image.pixel_height * 3/ 2]();
 			glBindTexture(image.opengl_info.target,y_id);
     		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)pNV21Data);
-			glBindTexture(image.opengl_info.target,uv_id);
+			glBindTexture(image.opengl_info.target,vu_id);
     		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)(&pNV21Data[image.pixel_width * image.pixel_height]));
-			
+
 			NV21ToRGBA(pNV21Data, pDst, image.pixel_width, image.pixel_height);
-			break;	
-		default:
+			break;
+		}
+
+		default:{
+
 			flag = false;
 			break;
+		}
+
 		}
 	}
 	else {

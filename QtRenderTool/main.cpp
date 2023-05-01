@@ -1,5 +1,5 @@
-#include "QtRenderTool.h"
 #include <QtWidgets/QApplication>
+#include "QtRenderTool.h"
 
 int main(int argc, char *argv[])
 {

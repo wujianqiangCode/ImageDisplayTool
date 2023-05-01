@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
-#include "ui_QtRenderTool.h"
 #include <QtGui/QPainter>
+#include "ui_QtRenderTool.h"
 #include "Socket.h"
 class QtRenderTool : public QMainWindow
 {
@@ -11,12 +11,8 @@ class QtRenderTool : public QMainWindow
 public:
     QtRenderTool(QWidget *parent = nullptr);
     ~QtRenderTool();
-
-protected:
-    void paintEvent(QPaintEvent*);
-
+private Q_SLOTS:
+    void on_checkBoxSetSocketPort_clicked(bool);
 private:
-    Ui::QtRenderToolClass ui;
-
-    CTcpClient m_tcpClient;
+    CTcpClient* m_pTcpClient;
 };

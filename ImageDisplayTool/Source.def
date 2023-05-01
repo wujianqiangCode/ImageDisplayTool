@@ -1,0 +1,7 @@
+LIBRARY	"ImageDisplayTool"
+
+EXPORTS
+	SetTcpServerPort @91
+	SetLogDisplayLevel @92
+	SendLog @93
+	SendImage @94

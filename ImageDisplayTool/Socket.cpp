@@ -7,7 +7,7 @@
 
 CTcpServer::CTcpServer()
 {
-    // æ„é€ å‡½æ•°åˆå§‹åŒ–socket
+    // ¹¹Ôìº¯Êı³õÊ¼»¯socket
     m_listenfd = m_clientfd = 0;
 
 #ifdef _WIN32
@@ -29,29 +29,32 @@ CTcpServer::~CTcpServer()
 #ifdef _WIN32
         closesocket(m_listenfd);
 #else
-        close(m_listenfd);  // ææ„å‡½æ•°å…³é—­socket
+        close(m_listenfd);  // Îö¹¹º¯Êı¹Ø±Õsocket
 #endif
     }
     if (m_clientfd != 0) {
 #ifdef _WIN32
         closesocket(m_clientfd);
 #else
-        close(m_clientfd);  // ææ„å‡½æ•°å…³é—­socket
+        close(m_clientfd);  // Îö¹¹º¯Êı¹Ø±Õsocket
 #endif
     }
 }
 
-// åˆå§‹åŒ–æœåŠ¡ç«¯çš„socketï¼Œportä¸ºé€šä¿¡ç«¯å£
+// ³õÊ¼»¯·şÎñ¶ËµÄsocket£¬portÎªÍ¨ĞÅ¶Ë¿Ú
 bool CTcpServer::InitServer(int port)
 {
-    m_listenfd = socket(AF_INET, SOCK_STREAM, 0);  // åˆ›å»ºæœåŠ¡ç«¯çš„socket
+    m_listenfd = socket(AF_INET, SOCK_STREAM, 0);  // ´´½¨·şÎñ¶ËµÄsocket
 
-    // æŠŠæœåŠ¡ç«¯ç”¨äºé€šä¿¡çš„åœ°å€å’Œç«¯å£ç»‘å®šåˆ°socketä¸Š
-    struct sockaddr_in servaddr;    // æœåŠ¡ç«¯åœ°å€ä¿¡æ¯çš„æ•°æ®ç»“æ„
+    // °Ñ·şÎñ¶ËÓÃÓÚÍ¨ĞÅµÄµØÖ·ºÍ¶Ë¿Ú°ó¶¨µ½socketÉÏ
+    struct sockaddr_in servaddr;    // ·şÎñ¶ËµØÖ·ĞÅÏ¢µÄÊı¾İ½á¹¹
     memset(&servaddr, 0, sizeof(servaddr));
-    servaddr.sin_family = AF_INET;  // åè®®æ—ï¼Œåœ¨socketç¼–ç¨‹ä¸­åªèƒ½æ˜¯AF_INET
-    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);  // æœ¬ä¸»æœºçš„ä»»æ„ipåœ°å€
-    servaddr.sin_port = htons(port);  // ç»‘å®šé€šä¿¡ç«¯å£
+
+    //AF_INET²»½ö¿ÉÒÔÓÃ×÷±¾»úµÄ¿ç½ø³ÌÍ¨ĞÅ£¬Í¬ÑùµÄ¿ÉÒÔÓÃÓÚ²»Í¬»úÆ÷Ö®¼äµÄÍ¨ĞÅ£¬Æä¾ÍÊÇÎªÁËÔÚ²»Í¬»úÆ÷Ö®¼ä½øĞĞÍøÂç»¥Áª´«µİÊı¾İ¶øÉú¡£
+    //¶øAF_UNIXÔòÖ»ÄÜÓÃÓÚ±¾»úÄÚ½ø³ÌÖ®¼äµÄÍ¨ĞÅ¡£
+    servaddr.sin_family = AF_INET;  // Ğ­Òé×å£¬ÔÚsocket±à³ÌÖĞÖ»ÄÜÊÇAF_INET
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);  // ±¾Ö÷»úµÄÈÎÒâipµØÖ·
+    servaddr.sin_port = htons(port);  // °ó¶¨Í¨ĞÅ¶Ë¿Ú
 #ifdef __linux__
     if (errno = bind(m_listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0){
 #else
@@ -68,7 +71,7 @@ bool CTcpServer::InitServer(int port)
         return false;
     }
 
-    // æŠŠsocketè®¾ç½®ä¸ºç›‘å¬æ¨¡å¼
+    // °ÑsocketÉèÖÃÎª¼àÌıÄ£Ê½
 #ifdef __linux__
    if (errno = listen(m_listenfd, 5) != 0) {
 #else
@@ -97,12 +100,12 @@ bool CTcpServer::Accept()
 }
 
 #ifdef _WIN32
-// å‘å¯¹ç«¯å‘é€æŠ¥æ–‡
+// Ïò¶Ô¶Ë·¢ËÍ±¨ÎÄ
 int  CTcpServer::Send(const char* buf, const int buflen) {
     return send(m_clientfd, buf, buflen, 0);
 }
 
-// æ¥æ”¶å¯¹ç«¯çš„æŠ¥æ–‡
+// ½ÓÊÕ¶Ô¶ËµÄ±¨ÎÄ
 int  CTcpServer::Recv(char* buf, const int buflen) {
     return recv(m_clientfd, buf, buflen, 0);
 }

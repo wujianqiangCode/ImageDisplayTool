@@ -20,7 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\ImageDisplayTool\ImageDisplayTool.h">
+    <ClInclude Include="..\..\ImageDisplayTool\ImageDisplayTool.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
