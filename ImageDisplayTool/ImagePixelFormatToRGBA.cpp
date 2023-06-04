@@ -56,12 +56,12 @@ void ARGBToRGBA(const unsigned char* argb, unsigned char* rgba,
 		}
 	}
 }
-void I420ToRGBA(const unsigned char* yuv, unsigned char* rgba,
+void I420ToRGBA(const unsigned char* yuv, unsigned char** rgba,
 	unsigned int pixel_width, unsigned int pixel_height) {
 
 	register int U, V, R, G, B, V2, U5, UV;
 	register int Y0, Y1, Y2, Y3;
-	rgba = new unsigned char[pixel_width * pixel_height * 4]();
+	*rgba = new unsigned char[pixel_width * pixel_height * 4]();
 	unsigned int size = pixel_width * pixel_height;
 	const unsigned char* iU = yuv + size;
 	const unsigned char* iV = yuv + 5 * size / 4;
@@ -94,10 +94,10 @@ void I420ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 			B = Y0 + U5;
 			if ((B >> 8) > 0) B = 255; else if (B < 0) B = 0;
 
-			*rgba++ = (unsigned char)R;
-			*rgba++ = (unsigned char)G;
-			*rgba++ = (unsigned char)B;
-			*rgba++ = 0;
+			**rgba++ = (unsigned char)R;
+			**rgba++ = (unsigned char)G;
+			**rgba++ = (unsigned char)B;
+			**rgba++ = 0;
 
 			//---
 			R = Y1 + V2;
@@ -109,11 +109,11 @@ void I420ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 			B = Y1 + U5;
 			if ((B >> 8) > 0) B = 255; else if (B < 0) B = 0;
 
-			*rgba++ = (unsigned char)R;
-			*rgba++ = (unsigned char)G;
-			*rgba++ = (unsigned char)B;
-			*rgba = 0;
-			rgba = rgba + 4 * pixel_width - 7;
+			**rgba++ = (unsigned char)R;
+			**rgba++ = (unsigned char)G;
+			**rgba++ = (unsigned char)B;
+			**rgba = 0;
+			*rgba = *rgba + 4 * pixel_width - 7;
 
 			//---
 			R = Y2 + V2;
@@ -125,10 +125,10 @@ void I420ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 			B = Y2 + U5;
 			if ((B >> 8) > 0) B = 255; else if (B < 0) B = 0;
 
-			*rgba++ = (unsigned char)R;
-			*rgba++ = (unsigned char)G;
-			*rgba++ = (unsigned char)B;
-			*rgba++ = 0;
+			**rgba++ = (unsigned char)R;
+			**rgba++ = (unsigned char)G;
+			**rgba++ = (unsigned char)B;
+			**rgba++ = 0;
 
 			//---
 			R = Y3 + V2;
@@ -140,23 +140,23 @@ void I420ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 			B = Y3 + U5;
 			if ((B >> 8) > 0) B = 255; else if (B < 0) B = 0;
 
-			*rgba++ = (unsigned char)R;
-			*rgba++ = (unsigned char)G;
-			*rgba++ = (unsigned char)B;
-			*rgba = 0;
-			rgba = rgba - 4 * pixel_width + 1;
+			**rgba++ = (unsigned char)R;
+			**rgba++ = (unsigned char)G;
+			**rgba++ = (unsigned char)B;
+			**rgba = 0;
+			*rgba = *rgba - 4 * pixel_width + 1;
 		}
 		yuv += pixel_width;
-		rgba += 4 * pixel_width;
+		*rgba += 4 * pixel_width;
 	}
 }
 
-void YV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
+void YV12ToRGBA(const unsigned char* yuv, unsigned char** rgba,
 	unsigned int pixel_width, unsigned int pixel_height) {
 
 	register int U, V, R, G, B, V2, U5, UV;//使用cpu内部寄存器,提升效率
 	register int Y0, Y1, Y2, Y3;
-	rgba = new unsigned char[pixel_width * pixel_height * 4]();
+	*rgba = new unsigned char[pixel_width * pixel_height * 4]();
 	unsigned int size = pixel_width * pixel_height;
 	const unsigned char* iV = yuv + size;
 	const unsigned char* iU = yuv + 5 * size / 4;
@@ -185,10 +185,10 @@ void YV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 			B = Y0 + U5;
 			if ((B >> 8) > 0) B = 255; else if (B < 0) B = 0;
 
-			*rgba++ = (unsigned char)R;
-			*rgba++ = (unsigned char)G;
-			*rgba++ = (unsigned char)B;
-			*rgba++ = 0;
+			**rgba++ = (unsigned char)R;
+			**rgba++ = (unsigned char)G;
+			**rgba++ = (unsigned char)B;
+			**rgba++ = 0;
 
 			//---
 			R = Y1 + V2;
@@ -200,11 +200,11 @@ void YV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 			B = Y1 + U5;
 			if ((B >> 8) > 0) B = 255; else if (B < 0) B = 0;
 
-			*rgba++ = (unsigned char)R;
-			*rgba++ = (unsigned char)G;
-			*rgba++ = (unsigned char)B;
-			*rgba = 0;
-			rgba = rgba + 4 * pixel_width - 7;
+			**rgba++ = (unsigned char)R;
+			**rgba++ = (unsigned char)G;
+			**rgba++ = (unsigned char)B;
+			**rgba = 0;
+			*rgba = *rgba + 4 * pixel_width - 7;
 
 			//---
 			R = Y2 + V2;
@@ -216,10 +216,10 @@ void YV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 			B = Y2 + U5;
 			if ((B >> 8) > 0) B = 255; else if (B < 0) B = 0;
 
-			*rgba++ = (unsigned char)R;
-			*rgba++ = (unsigned char)G;
-			*rgba++ = (unsigned char)B;
-			*rgba++ = 0;
+			**rgba++ = (unsigned char)R;
+			**rgba++ = (unsigned char)G;
+			**rgba++ = (unsigned char)B;
+			**rgba++ = 0;
 
 			R = Y3 + V2;
 			if ((R >> 8) > 0) R = 255; else if (R < 0) R = 0;
@@ -230,23 +230,23 @@ void YV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 			B = Y3 + U5;
 			if ((B >> 8) > 0) B = 255; else if (B < 0) B = 0;
 
-			*rgba++ = (unsigned char)R;
-			*rgba++ = (unsigned char)G;
-			*rgba++ = (unsigned char)B;
-			*rgba = 0;
-			rgba = rgba - 4 * pixel_width + 1;
+			**rgba++ = (unsigned char)R;
+			**rgba++ = (unsigned char)G;
+			**rgba++ = (unsigned char)B;
+			**rgba = 0;
+			*rgba = *rgba - 4 * pixel_width + 1;
 		}
 		yuv += pixel_width;
-		rgba += 4 * pixel_width;
+		*rgba += 4 * pixel_width;
 	}
 }
 
-void NV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
+void NV12ToRGBA(const unsigned char* yuv, unsigned char** rgba,
 	unsigned int pixel_width, unsigned int pixel_height) {
 
 	//nv12
 	int total = pixel_width * pixel_height;
-	rgba = new unsigned char[pixel_width * pixel_height * 4]();
+	*rgba = new unsigned char[pixel_width * pixel_height * 4]();
 	char Y, U, V;
 	float R, G, B;
 	int index = 0;
@@ -268,10 +268,10 @@ void NV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 			if (B < 0) B = 0;
 			if (B > 255) B = 255;
 
-			rgba[index++] = B;
-			rgba[index++] = G;
-			rgba[index++] = R;
-			rgba[index++] = 255;
+			*rgba[index++] = B;
+			*rgba[index++] = G;
+			*rgba[index++] = R;
+			*rgba[index++] = 255;
 
 			Y = yuv[h * pixel_width + w * 2 + 1];
 			R = Y + 1.4075 * (V - 128);
@@ -285,21 +285,21 @@ void NV12ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 			if (B < 0) B = 0;
 			if (B > 255) B = 255;
 
-			rgba[index++] = B;
-			rgba[index++] = G;
-			rgba[index++] = R;
-			rgba[index++] = 255;
+			*rgba[index++] = B;
+			*rgba[index++] = G;
+			*rgba[index++] = R;
+			*rgba[index++] = 255;
 		}
 	}
 }
 
 
-void NV21ToRGBA(const unsigned char* yuv, unsigned char* rgba,
+void NV21ToRGBA(const unsigned char* yuv, unsigned char** rgba,
 	int pixel_width, int pixel_height) {
 
 	//nv21
 	int total = pixel_width * pixel_height;
-	rgba = new unsigned char[pixel_width * pixel_height * 4]();
+	*rgba = new unsigned char[pixel_width * pixel_height * 4]();
 	char Y, U, V;
 	float R, G, B;
 	int index = 0;
@@ -321,10 +321,10 @@ void NV21ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 			if (B < 0) B = 0;
 			if (B > 255) B = 255;
 
-			rgba[index++] = B;
-			rgba[index++] = G;
-			rgba[index++] = R;
-			rgba[index++] = 255;
+			*rgba[index++] = B;
+			*rgba[index++] = G;
+			*rgba[index++] = R;
+			*rgba[index++] = 255;
 
 			Y = yuv[h * pixel_width + w * 2 + 1];
 			R = Y + 1.4075 * (V - 128);
@@ -338,10 +338,10 @@ void NV21ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 			if (B < 0) B = 0;
 			if (B > 255) B = 255;
 
-			rgba[index++] = B;
-			rgba[index++] = G;
-			rgba[index++] = R;
-			rgba[index++] = 255;
+			*rgba[index++] = B;
+			*rgba[index++] = G;
+			*rgba[index++] = R;
+			*rgba[index++] = 255;
 		}
 	}
 }
@@ -349,10 +349,10 @@ void NV21ToRGBA(const unsigned char* yuv, unsigned char* rgba,
 #define vpSAT(c) \
         if (c & (~255)) { if (c < 0) c = 0; else c = 255; }
 
-void YUYVToRGBA(const unsigned char* yuyv, unsigned char* rgba,
+void YUYVToRGBA(const unsigned char* yuyv, unsigned char** rgba,
 	int pixel_width, int pixel_height) {
 
-	rgba = new unsigned char[pixel_width * pixel_height * 4]();
+	*rgba = new unsigned char[pixel_width * pixel_height * 4]();
 	const unsigned char* s;
 	unsigned char* d;
 	int w, h, c;
@@ -361,7 +361,7 @@ void YUYVToRGBA(const unsigned char* yuyv, unsigned char* rgba,
 	h = (int)pixel_height;
 	w = (int)pixel_width;
 	s = yuyv;
-	d = rgba;
+	d = *rgba;
 	while (h--) {
 		c = w >> 1;
 		while (c--) {
@@ -400,7 +400,7 @@ void YUYVToRGBA(const unsigned char* yuyv, unsigned char* rgba,
 }
 
 
-bool ImagePixelFormatToRGBA(IMAGE image, unsigned char* pDst) {
+bool ImagePixelFormatToRGBA(IMAGE image, unsigned char** ppDst) {
 
 	bool flag =true;
 	if(image.type == IF_RGB){
@@ -408,16 +408,16 @@ bool ImagePixelFormatToRGBA(IMAGE image, unsigned char* pDst) {
 		switch (image.rgb_info.format)
 		{
 		case RGBA:
-			pDst = image.rgb_info.pData;
+			*ppDst = image.rgb_info.pData;
 			break;
 		case BGRA:
-			BGRAToRGBA(image.rgb_info.pData, pDst, image.pixel_width, image.pixel_height);
+			BGRAToRGBA(image.rgb_info.pData, *ppDst, image.pixel_width, image.pixel_height);
 			break;
 		case ABGR:
-			ABGRToRGBA(image.rgb_info.pData, pDst, image.pixel_width, image.pixel_height);
+			ABGRToRGBA(image.rgb_info.pData, *ppDst, image.pixel_width, image.pixel_height);
 			break;
 		case ARGB:
-			ARGBToRGBA(image.rgb_info.pData, pDst, image.pixel_width, image.pixel_height);
+			ARGBToRGBA(image.rgb_info.pData, *ppDst, image.pixel_width, image.pixel_height);
 			break;
 		default:
 			flag = false;
@@ -429,16 +429,16 @@ bool ImagePixelFormatToRGBA(IMAGE image, unsigned char* pDst) {
 		switch (image.yuv_info.format)
 		{
 		case I420:
-			I420ToRGBA(image.yuv_info.pData, pDst, image.pixel_width, image.pixel_height);
+			I420ToRGBA(image.yuv_info.pData, ppDst, image.pixel_width, image.pixel_height);
 			break;
 		case YV12:
-			YV12ToRGBA(image.yuv_info.pData, pDst, image.pixel_width, image.pixel_height);
+			YV12ToRGBA(image.yuv_info.pData, ppDst, image.pixel_width, image.pixel_height);
 			break;
 		case NV12:
-			NV12ToRGBA(image.yuv_info.pData, pDst, image.pixel_width, image.pixel_height);
+			NV12ToRGBA(image.yuv_info.pData, ppDst, image.pixel_width, image.pixel_height);
 			break;
 		case NV21:
-			NV21ToRGBA(image.yuv_info.pData, pDst, image.pixel_width, image.pixel_height);
+			NV21ToRGBA(image.yuv_info.pData, ppDst, image.pixel_width, image.pixel_height);
 			break;
 		case I422:
 		case YV16:
@@ -448,7 +448,7 @@ bool ImagePixelFormatToRGBA(IMAGE image, unsigned char* pDst) {
 			flag = false;
 			break;
 		case YUYV:
-			YUYVToRGBA(image.yuv_info.pData, pDst, image.pixel_width, image.pixel_height);
+			YUYVToRGBA(image.yuv_info.pData, ppDst, image.pixel_width, image.pixel_height);
 			break;
 		case YUVY:
 		case VYUY:
@@ -473,17 +473,17 @@ bool ImagePixelFormatToRGBA(IMAGE image, unsigned char* pDst) {
 		case OpenGL_RGBA:{
 
 			GLuint id = (GLuint)image.opengl_info.texture_id[0];
-    		pDst = new unsigned char[image.pixel_width * image.pixel_height * 4]();
+    		*ppDst = new unsigned char[image.pixel_width * image.pixel_height * 4]();
 			glBindTexture(image.opengl_info.target,id);
-    		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, pDst);
+    		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, ppDst);
 			break;
 		}
 		case OpenGL_BGRA:{
 
 			GLuint id = (GLuint)image.opengl_info.texture_id[0];
-    		pDst = new unsigned char[image.pixel_width * image.pixel_height * 4]();
+    		*ppDst = new unsigned char[image.pixel_width * image.pixel_height * 4]();
 			glBindTexture(image.opengl_info.target,id);
-    		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, pDst);
+    		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, ppDst);
 			break;
 		}
 
@@ -498,7 +498,7 @@ bool ImagePixelFormatToRGBA(IMAGE image, unsigned char* pDst) {
 			glBindTexture(image.opengl_info.target,uv_id);
     		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)(&pNV12Data[image.pixel_width * image.pixel_height]));
 
-			NV12ToRGBA(pNV12Data, pDst, image.pixel_width, image.pixel_height);
+			NV12ToRGBA(pNV12Data, ppDst, image.pixel_width, image.pixel_height);
 			break;
 		}
 
@@ -513,7 +513,7 @@ bool ImagePixelFormatToRGBA(IMAGE image, unsigned char* pDst) {
 			glBindTexture(image.opengl_info.target,vu_id);
     		glReadPixels(0, 0, image.pixel_width, image.pixel_height,GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)(&pNV21Data[image.pixel_width * image.pixel_height]));
 
-			NV21ToRGBA(pNV21Data, pDst, image.pixel_width, image.pixel_height);
+			NV21ToRGBA(pNV21Data, ppDst, image.pixel_width, image.pixel_height);
 			break;
 		}
 

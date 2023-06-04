@@ -15,12 +15,21 @@ ADD_EXECUTABLE(TestDemo main.cpp)
 
 #加载静态LIB
 if (WIN32)
-    TARGET_LINK_LIBRARIES(TestDemo PRIVATE  ${OPENGL_LIBRARIES} 
-    ${PROJECT_SOURCE_DIR}/../ImageDisplayTool/ImageDisplayTool.lib)
+    TARGET_LINK_LIBRARIES(TestDemo PRIVATE  ${PROJECT_SOURCE_DIR}/../Install/Win/x64/Release/ImageDisplayTool.lib 
+    ${OPENGL_LIBRARIES})
 elseif (APPLE)
-    TARGET_LINK_LIBRARIES(TestDemo PRIVATE  ${OPENGL_LIBRARIES} 
-    ${PROJECT_SOURCE_DIR}/../ImageDisplayTool/libImageDisplayTool.a)
+    TARGET_LINK_LIBRARIES(TestDemo PRIVATE  ${PROJECT_SOURCE_DIR}/../Install/Mac/x64/Release/libImageDisplayTool.a 
+    ${OPENGL_LIBRARIES})
 elseif (UNIX)
-    TARGET_LINK_LIBRARIES(TestDemo PRIVATE  ${OPENGL_LIBRARIES} 
-    ${PROJECT_SOURCE_DIR}/../ImageDisplayTool/libImageDisplayTool.a)    
+    TARGET_LINK_LIBRARIES(TestDemo PRIVATE  ${PROJECT_SOURCE_DIR}/../Install/Linux/x64/Release/libImageDisplayTool.a 
+    ${OPENGL_LIBRARIES})
+endif ()
+
+#设置exe文件生成路径
+if (WIN32)
+    SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../Install/Win/x64/Release)   
+elseif (APPLE)
+    SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../Install/Mac/x64/Release)   
+elseif (UNIX)
+    SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/../Install/Linux/x64/Release)   
 endif ()

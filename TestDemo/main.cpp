@@ -36,8 +36,8 @@ int main() {
 	SendImage = (SendImageFunc)GetProcAddress(module, "SendImage");
 
 #endif
-
-	bool flage = SetTcpServerPort(5051);
+	char* tcpServerIP = "172.16.1.236";
+	bool flage = SetTcpInfo(tcpServerIP,5050);
 	assert(flage);
 
 //#define TestLog 1
@@ -55,7 +55,7 @@ int main() {
 	
 #elif TestImage
 
-#define TestOpenGL 1
+#define TestRGBImage 1
 
 #ifdef TestRGBImage
 
@@ -141,6 +141,6 @@ int main() {
 #elif TestMetal
 #endif
 #endif
-	assert(flage);
+	
 	return 0;
 }

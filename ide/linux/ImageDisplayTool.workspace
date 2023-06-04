@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
-	<Workspace title="WS_Log workspace">
+	<Workspace title="ImageDisplayTool workspace">
 		<Project filename="./ImageDisplayTool.cbp" />
 		<Project filename="./QtRenderTool.cbp" />
 		<Project filename="./TestDemo.cbp" />

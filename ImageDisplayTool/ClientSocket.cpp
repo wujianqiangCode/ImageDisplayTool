@@ -1,28 +1,27 @@
-
-#include "Socket.h"
+#include "ClientSocket.h"
 
 CTcpClient::CTcpClient()
 {
-    m_sockfd = 0;  // ¹¹Ôìº¯Êı³õÊ¼»¯m_sockfd
+    m_sockfd = 0;  // æ„é€ å‡½æ•°åˆå§‹åŒ–m_sockfd
 }
 
 CTcpClient::~CTcpClient()
 {
     if (m_sockfd != 0) 
 #ifdef _WIN32
-        closesocket(m_sockfd);// Îö¹¹º¯Êı¹Ø±Õm_sockfd
+        closesocket(m_sockfd);// ææ„å‡½æ•°å…³é—­m_sockfd
 #else
         close(m_sockfd);
 #endif
 }
 
-// Ïò·şÎñÆ÷·¢ÆğÁ¬½Ó£¬serverip-·şÎñ¶Ëip£¬portÍ¨ĞÅ¶Ë¿Ú
+// å‘æœåŠ¡å™¨å‘èµ·è¿æ¥ï¼Œserverip-æœåŠ¡ç«¯ipï¼Œporté€šä¿¡ç«¯å£
 bool CTcpClient::ConnectToServer(const char* serverip, const int port)
 {
-    m_sockfd = socket(AF_INET, SOCK_STREAM, 0); // ´´½¨¿Í»§¶ËµÄsocket
+    m_sockfd = socket(AF_INET, SOCK_STREAM, 0); // åˆ›å»ºå®¢æˆ·ç«¯çš„socket
 
-    struct hostent* h; // ipµØÖ·ĞÅÏ¢µÄÊı¾İ½á¹¹
-    if ((h = gethostbyname(serverip)) == 0)
+    struct hostent* h; // ipåœ°å€ä¿¡æ¯çš„æ•°æ®ç»“æ„
+    if ((h = gethostbyname(serverip)) == 0)//å®¢æˆ·ç«¯ç¨‹åºæŒ‡å®šæœåŠ¡ç«¯çš„ipåœ°å€
     {
 #ifdef _WIN32
         closesocket(m_sockfd);
@@ -33,14 +32,29 @@ bool CTcpClient::ConnectToServer(const char* serverip, const int port)
         return false;
     }
 
-    // °Ñ·şÎñÆ÷µÄµØÖ·ºÍ¶Ë¿Ú×ª»»ÎªÊı¾İ½á¹¹
+    // è®¾ç½®è¿æ¥è¶…æ—¶æ—¶é—´ä¸º 0 ç§’
+    struct timeval tv;
+    tv.tv_sec = 0;
+    tv.tv_usec = 0;
+    if (setsockopt(m_sockfd, SOL_TCP, TCP_NODELAY, &tv, sizeof(tv)) < 0) 
+    {
+#ifdef _WIN32
+        closesocket(m_sockfd);
+#else
+        close(m_sockfd);
+#endif
+        m_sockfd = 0;
+        return false;
+    }
+
+    // æŠŠæœåŠ¡å™¨çš„åœ°å€å’Œç«¯å£è½¬æ¢ä¸ºæ•°æ®ç»“æ„
     struct sockaddr_in servaddr;
     memset(&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(port);
     memcpy(&servaddr.sin_addr, h->h_addr, h->h_length);
 
-    // Ïò·şÎñÆ÷·¢ÆğÁ¬½ÓÇëÇó
+    // å‘æœåŠ¡å™¨å‘èµ·è¿æ¥è¯·æ±‚
     if (connect(m_sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0)
     {
 #ifdef _WIN32

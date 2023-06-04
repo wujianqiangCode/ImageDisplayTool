@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug x64">
-				<Option output="../x64/Linux/Debug/ImageDisplayTool" prefix_auto="1" extension_auto="1" />
+				<Option output="../../Install/Linux/x64/Debug/ImageDisplayTool" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -19,7 +19,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release x64">
-				<Option output="../x64/Linux/Release/ImageDisplayTool" prefix_auto="1" extension_auto="1" />
+				<Option output="../../Install/Linux/x64/Release/ImageDisplayTool" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -43,12 +43,12 @@
 			<Add option="-Wl,-Bsymbolic" />
 			<Add option="-Wl,-R,&apos;.:\\$$$ORIGIN&apos;" />
 		</Linker>
+		<Unit filename="../../ImageDisplayTool/ClientSocket.cpp" />
+		<Unit filename="../../ImageDisplayTool/ClientSocket.h" />
 		<Unit filename="../../ImageDisplayTool/ImageDisplayTool.cpp" />
 		<Unit filename="../../ImageDisplayTool/ImageDisplayTool.h" />
 		<Unit filename="../../ImageDisplayTool/ImagePixelFormatToRGBA.cpp" />
 		<Unit filename="../../ImageDisplayTool/ImagePixelFormatToRGBA.h" />
-		<Unit filename="../../ImageDisplayTool/Socket.cpp" />
-		<Unit filename="../../ImageDisplayTool/Socket.h" />
 		<Unit filename="../../ImageDisplayTool/Source.def" />
 		<Extensions>
 			<envvars />

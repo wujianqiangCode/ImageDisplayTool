@@ -7,30 +7,32 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug x64">
-				<Option output="../x64/Linux/Debug/TestDemo" prefix_auto="1" extension_auto="1" />
+				<Option output="../../Install/Linux/x64/Debug/TestDemo" prefix_auto="1" extension_auto="1" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
 					<Add option="-D_CONSOLE" />
+					<Add directory="../../Install/Linux/x64/Debug" />
 				</Compiler>
 				<Linker>
-					<Add directory="../x64/Linux/Debug" />
+					<Add directory="../../Install/Linux/x64/Debug" />
 				</Linker>
 			</Target>
 			<Target title="Release x64">
-				<Option output="../x64/Linux/Release/TestDemo" prefix_auto="1" extension_auto="1" />
+				<Option output="../../Install/Linux/x64/Release/TestDemo" prefix_auto="1" extension_auto="1" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O1" />
 					<Add option="-DNDEBUG" />
 					<Add option="-D_CONSOLE" />
+					<Add directory="../../Install/Linux/x64/Release" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add directory="../x64/Linux/Release" />
+					<Add directory="../../Install/Linux/x64/Release" />
 				</Linker>
 			</Target>
 		</Build>
@@ -38,8 +40,8 @@
 			<Add directory="../.." />
 		</Compiler>
 		<Linker>
-			<Add library="libGL" />
 			<Add library="libImageDisplayTool.a" />
+			<Add library="libGL" />
 		</Linker>
 		<Unit filename="../../TestDemo/main.cpp" />
 		<Extensions>

@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/QtRenderTool" prefix_auto="1" extension_auto="1" />
+				<Option output="../../Install/Linux/x64/Debug/QtRenderTool" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -16,7 +16,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/QtRenderTool" prefix_auto="1" extension_auto="1" />
+				<Option output="../../Install/Linux/x64/Release/QtRenderTool" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -33,6 +33,7 @@
 			<Add option="-fPIC" />
 			<Add directory="../../../GitDemo/vcu/TCCodec_VCU_Linux/MultimediaPlatformAlignTrans/Document/QtDemo/Qt5.12.8/Linux/include" />
 			<Add directory="../.." />
+			<Add directory="../../QtRenderTool/QtRenderTool_autogen/include" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--unresolved-symbols=report-all" />
@@ -46,8 +47,10 @@
 		<Unit filename="../../QtRenderTool/QtRenderTool.cpp" />
 		<Unit filename="../../QtRenderTool/QtRenderTool.h" />
 		<Unit filename="../../QtRenderTool/QtRenderTool.ui" />
-		<Unit filename="../../QtRenderTool/Socket.cpp" />
-		<Unit filename="../../QtRenderTool/Socket.h" />
+		<Unit filename="../../QtRenderTool/QtRenderTool_autogen/EWIEGA46WW/moc_QtRenderTool.cpp" />
+		<Unit filename="../../QtRenderTool/QtRenderTool_autogen/EWIEGA46WW/moc_ServerSocket.cpp" />
+		<Unit filename="../../QtRenderTool/ServerSocket.cpp" />
+		<Unit filename="../../QtRenderTool/ServerSocket.h" />
 		<Unit filename="../../QtRenderTool/main.cpp" />
 		<Extensions>
 			<envvars />
